@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="Assets/style.css">
+    <title>Dog-List</title>
+</head>
+<body>
+<h1>API for dog breeds</h1>
+<input oninput="getDog(this)" type="text">
+<div id="result">
+
+</div>
+<div id="picture">
+
+</div>
+
+<script>
+    function getDog(pole) {
+        var div = document.getElementById("result");
+        div.innerHTML = "";
+        var request = new XMLHttpRequest();
+        request.open("get", "server.php?search=" + pole.value);
+        request.onreadystatechange = function (){
+            if(this.readyState === 4 && this.status === 200){
+                var names = JSON.parse(this.responseText);
+                var ul = document.createElement("ul");
+                for(var i = 0; i < names.length; i++){
+                    var li = document.createElement("li");
+                    li.innerHTML = names[i];
+                    ul.appendChild(li);
+                    li.onmouseover = function(){
+                        var divdve = document.getElementById("picture");
+                        divdve.innerHTML = "";
+                        var value = this.innerHTML;
+                        console.log(value);
+                        var requestdve = new XMLHttpRequest();
+                        requestdve.open("get", "server.php?picture=" + value);
+                        requestdve.onreadystatechange = function(){
+                            if(this.readyState === 4 && this.status === 200){
+                                var dogPicture = JSON.parse(this.responseText);
+                                var immage = document.createElement("img");
+                                console.log("hello");
+                                immage.src = dogPicture["pic"];
+                                divdve.appendChild(immage);
+                            }
+                        }
+                        requestdve.send();
+                    }
+                }
+                div.appendChild(ul);
+                div.style.visibility = "visible";
+            }
+        }
+        request.send();
+    }
+
+</script>
+
+</body>
+</html>
